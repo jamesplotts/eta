@@ -10,11 +10,11 @@ ETA: 14:32, 2.3 mi to waypoint
 
 - **ETA** is game time, from the distance left and the train's speed averaged over about 20 seconds, so it settles as the train gets up to speed. It takes the game's clock rate into account. With the AE speed set to 0 it shows `∞`. While the train is otherwise stopped or crawling under 1 mph it shows `--:--`.
 - **Distance** is the Auto Engineer's own figure for the route left to the waypoint, the same one the fast-forward screen shows.
-- The line is blank for Manual, AE Road and AE Yard, or when there's no waypoint route.
-- In multiplayer the Auto Engineer runs on the host, so only the host sees the line.
+- In Manual, AE Road or AE Yard, or once the engine has arrived, the line reads `ETA: No Waypoint Set`.
+- In multiplayer the Auto Engineer runs on the host, so only the host sees the line; on a client it's blank.
 - The ETA line takes the place of the crew line, which is no longer shown there. Instead, hover the engine's name (the big text) for a callout with:
   - **Crew:** the crew's name and timetable train, or **None**;
-  - the same ETA line, when there's a waypoint;
+  - the same ETA line;
   - the engine's destination, fuel and water, condition and wheel oil, handbrake, hotbox or derailed;
   - the whole train's cars, tons and length, loaded and empty cars, and the steepest grade it can pull.
 
