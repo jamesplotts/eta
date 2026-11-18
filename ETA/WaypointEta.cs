@@ -47,14 +47,14 @@ namespace ETA
 
         public static void Clear() => Speeds.Clear();
 
-        // Empty unless the engine has a waypoint route.
+        // Empty only on a multiplayer client, where the planner (on the host) can't be read.
         public static string Line(BaseLocomotive locomotive)
         {
-            if (locomotive == null || !IsRunningToWaypoint(locomotive))
+            if (locomotive == null || locomotive.AutoEngineerPlanner == null)
                 return "";
-            float? remaining = locomotive.AutoEngineerPlanner.RemainingWaypointDistance;
+            float? remaining = IsRunningToWaypoint(locomotive) ? locomotive.AutoEngineerPlanner.RemainingWaypointDistance : null;
             if (!remaining.HasValue)
-                return "";
+                return "ETA: No Waypoint Set";
 
             string eta = "--:--";
             float speed = Speeds.TryGetValue(locomotive.id, out float average) ? average : Mathf.Abs(locomotive.velocity);
