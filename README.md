@@ -8,7 +8,7 @@ A Railroader mod for the 0.6 "Maintenance of Way" built-in mod loader. When the 
 ETA: 14:32, 2.3 mi to waypoint
 ```
 
-- **ETA** is game time, from the distance left and the train's speed averaged over about 20 seconds, so it settles as the train gets up to speed. It takes the game's clock rate into account. While the train is stopped or crawling under 1 mph it shows `--:--`.
+- **ETA** is game time, from the distance left and the train's speed averaged over about 20 seconds, so it settles as the train gets up to speed. It takes the game's clock rate into account. With the AE speed set to 0 it shows `∞`. While the train is otherwise stopped or crawling under 1 mph it shows `--:--`.
 - **Distance** is the Auto Engineer's own figure for the route left to the waypoint, the same one the fast-forward screen shows.
 - The line is blank for Manual, AE Road and AE Yard, or when there's no waypoint route.
 - In multiplayer the Auto Engineer runs on the host, so only the host sees the line.

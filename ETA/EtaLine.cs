@@ -111,14 +111,20 @@ namespace ETA
 
             // The planner only exists on the host, so a multiplayer client shows nothing.
             AutoEngineerPlanner planner = locomotive.AutoEngineerPlanner;
-            if (planner == null || new AutoEngineerPersistence(locomotive.KeyValueObject).Orders.Mode != AutoEngineerMode.Waypoint)
+            if (planner == null)
+                return "";
+            Orders orders = new AutoEngineerPersistence(locomotive.KeyValueObject).Orders;
+            if (orders.Mode != AutoEngineerMode.Waypoint)
                 return "";
             float? remaining = planner.RemainingWaypointDistance;
             if (!remaining.HasValue)
                 return "";
 
+            // Speed set to 0: the train won't get there until it's told to move.
             string eta = "--:--";
-            if (_speed >= StoppedSpeed)
+            if (orders.MaxSpeedMph == 0)
+                eta = "\u221E";
+            else if (_speed >= StoppedSpeed)
             {
                 // Physics runs in real seconds; the clock runs TimeMultiplier times faster.
                 float gameSeconds = remaining.Value / _speed * TimeWeather.TimeMultiplier;
