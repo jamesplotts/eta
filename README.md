@@ -12,6 +12,12 @@ ETA: 14:32, 2.3 mi to waypoint
 - **Distance** is the Auto Engineer's own figure for the route left to the waypoint, the same one the fast-forward screen shows.
 - The line is blank for Manual, AE Road and AE Yard, or when there's no waypoint route.
 - In multiplayer the Auto Engineer runs on the host, so only the host sees the line.
+- The ETA line takes the place of the crew line, which is no longer shown there. Instead, hover the engine's name (the big text) for a callout with:
+  - **Crew:** the crew's name and timetable train, or **None**;
+  - the engine's destination or train, fuel and water, condition and wheel oil, handbrake, hotbox or derailed;
+  - the whole train's cars, tons and length, loaded and empty cars, and the steepest grade it can pull.
+
+  The callout is the same one [PipTip](https://github.com/jamesplotts/piptip) shows for an engine's pip, styled like the Tab tags. ETA has its own copy, so it doesn't need PipTip.
 
 ## Install
 
@@ -34,8 +40,9 @@ Debug builds go to `Documents\Railroader\ModDev\ETA`, which the game loads as a 
 
 ## How it works
 
-- The new line is a copy of the locomotive window's "cars, tons, ft" label (`infoALabel` on `UI.EngineControls.LocomotiveControlsUIAdapter`), placed in the crew line's spot just below it (`infoBLabel`), so it has the same font and size. While the ETA shows, the crew line moves down one line.
+- The new line is a copy of the locomotive window's "cars, tons, ft" label (`infoALabel` on `UI.EngineControls.LocomotiveControlsUIAdapter`), placed in the crew line's spot just below it (`infoBLabel`, which the mod hides), so it has the same font and size.
 - Once a second it reads `AutoEngineerPlanner.RemainingWaypointDistance` for the selected engine and works out the arrival time on the game clock.
+- The callout is a copy of the Tab tag's callout prefab on the game's tooltip canvas, shown while the pointer is over the name label (`nameLabel`).
 - No Harmony: the mod doesn't patch any game code.
 
 ## License

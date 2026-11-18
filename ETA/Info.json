@@ -3,7 +3,7 @@
   "version": "__VERSION__",
   "name": "ETA",
   "author": "jamesplotts",
-  "description": "Adds a line under the cars, tons and length in the locomotive window showing the train's ETA at its Auto Engineer waypoint (game time) and the distance left to it.",
+  "description": "Adds a line under the cars, tons and length in the locomotive window showing the train's ETA at its Auto Engineer waypoint (game time) and the distance left to it. Hover the engine's name for a callout with its crew, loads, condition and train.",
   "assemblies": ["ETA.dll"],
   "dependencies": {
     "required": ["rr/game >=0.6.0"]

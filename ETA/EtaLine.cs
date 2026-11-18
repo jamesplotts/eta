@@ -27,13 +27,15 @@ namespace ETA
 
         private static readonly FieldInfo InfoALabelField =
             typeof(LocomotiveControlsUIAdapter).GetField("infoALabel", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly FieldInfo NameLabelField =
+            typeof(LocomotiveControlsUIAdapter).GetField("nameLabel", BindingFlags.Instance | BindingFlags.NonPublic);
         private static readonly FieldInfo InfoBLabelField =
             typeof(LocomotiveControlsUIAdapter).GetField("infoBLabel", BindingFlags.Instance | BindingFlags.NonPublic);
 
         private LocomotiveControlsUIAdapter _adapter;
         private TMP_Text _source;
         private TMP_Text _crew;
-        private Vector2 _crewPosition;
+        private LocoHover _hover;
         private TMP_Text _label;
         private float _nextUpdate;
         private string _locomotiveId;
@@ -48,17 +50,15 @@ namespace ETA
             if (!EnsureLabel())
                 return;
             _label.text = LineFor(TrainController.Shared?.SelectedLocomotive);
-            // The ETA takes the crew line's place, and the crew line moves down one line.
-            if (_crew != null)
-                _crew.rectTransform.anchoredPosition = _label.text.Length > 0
-                    ? _crewPosition - new Vector2(0f, _crew.rectTransform.rect.height)
-                    : _crewPosition;
         }
 
         private void OnDestroy()
         {
             if (_crew != null)
-                _crew.rectTransform.anchoredPosition = _crewPosition;
+                _crew.gameObject.SetActive(true);
+            if (_hover != null)
+                Destroy(_hover);
+            LocoTooltip.Shutdown();
             if (_label != null)
                 Destroy(_label.gameObject);
         }
@@ -75,9 +75,15 @@ namespace ETA
                 return false;
             LogLayout();
             _crew = InfoBLabelField?.GetValue(_adapter) as TMP_Text;
-            if (_crew != null)
-                _crewPosition = _crew.rectTransform.anchoredPosition;
             _label = MakeLabel(_source, _crew);
+            // The ETA line replaces the crew line; the crew is in the name's hover callout.
+            if (_crew != null)
+                _crew.gameObject.SetActive(false);
+            if (NameLabelField?.GetValue(_adapter) is TMP_Text name)
+            {
+                name.raycastTarget = true;
+                _hover = name.gameObject.GetComponent<LocoHover>() ?? name.gameObject.AddComponent<LocoHover>();
+            }
             return true;
         }
 

@@ -13,6 +13,7 @@
     <GameAssembly Include="UnityEngine.CoreModule" />
     <GameAssembly Include="UnityEngine.UI" />
     <GameAssembly Include="UnityEngine.UIModule" />
+    <GameAssembly Include="UnityEngine.InputLegacyModule" />
     <GameAssembly Include="UnityEngine.TextRenderingModule" />
     <GameAssembly Include="Unity.TextMeshPro" />
   </ItemGroup>
