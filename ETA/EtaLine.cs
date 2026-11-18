@@ -35,6 +35,7 @@ namespace ETA
         private LocomotiveControlsUIAdapter _adapter;
         private TMP_Text _source;
         private TMP_Text _crew;
+        private TMP_Text _name;
         private LocoHover _hover;
         private TMP_Text _label;
         private float _nextUpdate;
@@ -50,6 +51,7 @@ namespace ETA
             if (!EnsureLabel())
                 return;
             _label.text = LineFor(TrainController.Shared?.SelectedLocomotive);
+            AlignToName();
         }
 
         private void OnDestroy()
@@ -79,10 +81,11 @@ namespace ETA
             // The ETA line replaces the crew line; the crew is in the name's hover callout.
             if (_crew != null)
                 _crew.gameObject.SetActive(false);
-            if (NameLabelField?.GetValue(_adapter) is TMP_Text name)
+            _name = NameLabelField?.GetValue(_adapter) as TMP_Text;
+            if (_name != null)
             {
-                name.raycastTarget = true;
-                _hover = name.gameObject.GetComponent<LocoHover>() ?? name.gameObject.AddComponent<LocoHover>();
+                _name.raycastTarget = true;
+                _hover = _name.gameObject.GetComponent<LocoHover>() ?? _name.gameObject.AddComponent<LocoHover>();
             }
             return true;
         }
@@ -122,6 +125,31 @@ namespace ETA
             }
             copy.transform.SetSiblingIndex(source.transform.GetSiblingIndex() + 1);
             return label;
+        }
+
+        // Moves the ETA line so its baseline sits on the engine name's baseline.
+        private void AlignToName()
+        {
+            if (_name == null || _label.text.Length == 0 || _name.text.Length == 0)
+                return;
+            if (!TryGetBaseline(_name, out float nameBaseline) || !TryGetBaseline(_label, out float etaBaseline))
+                return;
+            Transform parent = _label.transform.parent;
+            float shift = parent.InverseTransformPoint(new Vector3(0f, nameBaseline, 0f)).y
+                - parent.InverseTransformPoint(new Vector3(0f, etaBaseline, 0f)).y;
+            if (Mathf.Abs(shift) > 0.01f)
+                _label.rectTransform.anchoredPosition += new Vector2(0f, shift);
+        }
+
+        // The first line's baseline, as a world-space y.
+        private static bool TryGetBaseline(TMP_Text text, out float y)
+        {
+            y = 0f;
+            text.ForceMeshUpdate();
+            if (text.textInfo == null || text.textInfo.lineCount == 0)
+                return false;
+            y = text.transform.TransformPoint(new Vector3(0f, text.textInfo.lineInfo[0].baseline, 0f)).y;
+            return true;
         }
 
         private string LineFor(BaseLocomotive locomotive)
