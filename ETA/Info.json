@@ -1,0 +1,11 @@
+{
+  "identifier": "jamesplotts/eta",
+  "version": "__VERSION__",
+  "name": "ETA",
+  "author": "jamesplotts",
+  "description": "Adds a line under the cars, tons and length in the locomotive window showing the train's ETA at its Auto Engineer waypoint (game time) and the distance left to it.",
+  "assemblies": ["ETA.dll"],
+  "dependencies": {
+    "required": ["rr/game >=0.6.0"]
+  }
+}
