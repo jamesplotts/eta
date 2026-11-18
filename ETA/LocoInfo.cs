@@ -34,8 +34,7 @@ namespace ETA
             OpsController ops = OpsController.Shared;
             if (ops != null && ops.TryGetDestinationInfo(car, out string destinationName, out bool isAtDestination, out _, out _))
                 lines.Add((isAtDestination ? "<sprite name=\"Spotted\">" : "<sprite name=\"Destination\">") + " " + destinationName);
-            else if (car.TryGetTrainName(out string trainName))
-                lines.Add(trainName);
+            // No train-name line: the game's train name is the crew's name, already on the Crew line.
 
             if (partner != null)
             {
