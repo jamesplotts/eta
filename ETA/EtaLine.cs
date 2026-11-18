@@ -32,6 +32,9 @@ namespace ETA
         private static readonly FieldInfo InfoBLabelField =
             typeof(LocomotiveControlsUIAdapter).GetField("infoBLabel", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        // The latest line for the selected engine, also shown in the name's callout.
+        internal static string Current { get; private set; } = "";
+
         private LocomotiveControlsUIAdapter _adapter;
         private TMP_Text _source;
         private TMP_Text _crew;
@@ -50,12 +53,14 @@ namespace ETA
             _nextUpdate = Time.unscaledTime + Interval;
             if (!EnsureLabel())
                 return;
-            _label.text = LineFor(TrainController.Shared?.SelectedLocomotive);
+            Current = LineFor(TrainController.Shared?.SelectedLocomotive);
+            _label.text = Current;
             AlignToName();
         }
 
         private void OnDestroy()
         {
+            Current = "";
             if (_crew != null)
                 _crew.gameObject.SetActive(true);
             if (_hover != null)

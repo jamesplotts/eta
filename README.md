@@ -14,6 +14,7 @@ ETA: 14:32, 2.3 mi to waypoint
 - In multiplayer the Auto Engineer runs on the host, so only the host sees the line.
 - The ETA line takes the place of the crew line, which is no longer shown there. Instead, hover the engine's name (the big text) for a callout with:
   - **Crew:** the crew's name and timetable train, or **None**;
+  - the same ETA line, when there's a waypoint;
   - the engine's destination, fuel and water, condition and wheel oil, handbrake, hotbox or derailed;
   - the whole train's cars, tons and length, loaded and empty cars, and the steepest grade it can pull.
 

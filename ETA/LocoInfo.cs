@@ -26,6 +26,8 @@ namespace ETA
         public static string Text(Car car)
         {
             List<string> lines = new List<string> { "Crew: " + Crew(car) };
+            if (EtaLine.Current.Length > 0)
+                lines.Add(EtaLine.Current);
             Car partner = Consist.Partner(car);
             // Show an engine/tender pair as one: the engine's info, then the tender's fuel.
             Car engine = partner != null && partner.IsLocomotive ? partner : car;
