@@ -27,9 +27,13 @@ namespace ETA
 
         private static readonly FieldInfo InfoALabelField =
             typeof(LocomotiveControlsUIAdapter).GetField("infoALabel", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly FieldInfo InfoBLabelField =
+            typeof(LocomotiveControlsUIAdapter).GetField("infoBLabel", BindingFlags.Instance | BindingFlags.NonPublic);
 
         private LocomotiveControlsUIAdapter _adapter;
         private TMP_Text _source;
+        private TMP_Text _crew;
+        private Vector2 _crewPosition;
         private TMP_Text _label;
         private float _nextUpdate;
         private string _locomotiveId;
@@ -44,10 +48,17 @@ namespace ETA
             if (!EnsureLabel())
                 return;
             _label.text = LineFor(TrainController.Shared?.SelectedLocomotive);
+            // The ETA takes the crew line's place, and the crew line moves down one line.
+            if (_crew != null)
+                _crew.rectTransform.anchoredPosition = _label.text.Length > 0
+                    ? _crewPosition - new Vector2(0f, _crew.rectTransform.rect.height)
+                    : _crewPosition;
         }
 
         private void OnDestroy()
         {
+            if (_crew != null)
+                _crew.rectTransform.anchoredPosition = _crewPosition;
             if (_label != null)
                 Destroy(_label.gameObject);
         }
@@ -63,12 +74,15 @@ namespace ETA
             if (_source == null)
                 return false;
             LogLayout();
-            _label = MakeLabel(_source);
+            _crew = InfoBLabelField?.GetValue(_adapter) as TMP_Text;
+            if (_crew != null)
+                _crewPosition = _crew.rectTransform.anchoredPosition;
+            _label = MakeLabel(_source, _crew);
             return true;
         }
 
-        // A copy of the "cars, tons, ft" label, one line below it.
-        private static TMP_Text MakeLabel(TMP_Text source)
+        // A copy of the "cars, tons, ft" label, in the crew line's place just below it.
+        private static TMP_Text MakeLabel(TMP_Text source, TMP_Text crew)
         {
             GameObject copy = Instantiate(source.gameObject, source.transform.parent);
             copy.name = "ETA Label";
@@ -84,13 +98,22 @@ namespace ETA
             TMP_Text label = copy.GetComponent<TMP_Text>();
             label.text = "";
             label.raycastTarget = false;
-            RectTransform from = source.rectTransform;
             RectTransform to = label.rectTransform;
-            to.anchorMin = from.anchorMin;
-            to.anchorMax = from.anchorMax;
-            to.pivot = from.pivot;
-            to.sizeDelta = from.sizeDelta;
-            to.anchoredPosition = from.anchoredPosition - new Vector2(0f, source.GetPreferredValues("Ag").y);
+            if (crew != null)
+            {
+                RectTransform from = crew.rectTransform;
+                to.anchorMin = from.anchorMin;
+                to.anchorMax = from.anchorMax;
+                to.pivot = from.pivot;
+                to.sizeDelta = from.sizeDelta;
+                to.anchoredPosition = from.anchoredPosition;
+                label.alignment = crew.alignment;
+            }
+            else
+            {
+                RectTransform from = source.rectTransform;
+                to.anchoredPosition = from.anchoredPosition - new Vector2(0f, from.rect.height);
+            }
             copy.transform.SetSiblingIndex(source.transform.GetSiblingIndex() + 1);
             return label;
         }

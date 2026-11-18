@@ -34,7 +34,7 @@ Debug builds go to `Documents\Railroader\ModDev\ETA`, which the game loads as a 
 
 ## How it works
 
-- The new line is a copy of the locomotive window's "cars, tons, ft" label (`infoALabel` on `UI.EngineControls.LocomotiveControlsUIAdapter`), placed one line below it, so it has the same font and size.
+- The new line is a copy of the locomotive window's "cars, tons, ft" label (`infoALabel` on `UI.EngineControls.LocomotiveControlsUIAdapter`), placed in the crew line's spot just below it (`infoBLabel`), so it has the same font and size. While the ETA shows, the crew line moves down one line.
 - Once a second it reads `AutoEngineerPlanner.RemainingWaypointDistance` for the selected engine and works out the arrival time on the game clock.
 - No Harmony: the mod doesn't patch any game code.
 
