@@ -1,11 +1,6 @@
 using System.Reflection;
-using Game;
-using Game.Messages;
-using Model;
-using Model.AI;
 using TMPro;
 using UI.EngineControls;
-using UI.Formatting;
 using UI.Tooltips;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,13 +12,6 @@ namespace ETA
     internal sealed class EtaLine : MonoBehaviour
     {
         private const float Interval = 1f;
-
-        // Speed is averaged over about this many seconds, so the ETA doesn't jump with
-        // every little change in speed.
-        private const float SmoothingSeconds = 20f;
-
-        // Below this (m/s, about 1 mph) the train counts as stopped and there's no ETA.
-        private const float StoppedSpeed = 0.45f;
 
         private static readonly FieldInfo InfoALabelField =
             typeof(LocomotiveControlsUIAdapter).GetField("infoALabel", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -42,8 +30,6 @@ namespace ETA
         private LocoHover _hover;
         private TMP_Text _label;
         private float _nextUpdate;
-        private string _locomotiveId;
-        private float _speed;
         private bool _logged;
 
         private void Update()
@@ -53,7 +39,7 @@ namespace ETA
             _nextUpdate = Time.unscaledTime + Interval;
             if (!EnsureLabel())
                 return;
-            Current = LineFor(TrainController.Shared?.SelectedLocomotive);
+            Current = WaypointEta.Line(TrainController.Shared?.SelectedLocomotive);
             _label.text = Current;
             AlignToName();
         }
@@ -155,46 +141,6 @@ namespace ETA
                 return false;
             y = text.transform.TransformPoint(new Vector3(0f, text.textInfo.lineInfo[0].baseline, 0f)).y;
             return true;
-        }
-
-        private string LineFor(BaseLocomotive locomotive)
-        {
-            if (locomotive == null)
-                return "";
-            if (locomotive.id != _locomotiveId)
-            {
-                _locomotiveId = locomotive.id;
-                _speed = Mathf.Abs(locomotive.velocity);
-            }
-            else
-            {
-                _speed += (Mathf.Abs(locomotive.velocity) - _speed) * (1f - Mathf.Exp(-Interval / SmoothingSeconds));
-            }
-
-            // The planner only exists on the host, so a multiplayer client shows nothing.
-            AutoEngineerPlanner planner = locomotive.AutoEngineerPlanner;
-            if (planner == null)
-                return "";
-            Orders orders = new AutoEngineerPersistence(locomotive.KeyValueObject).Orders;
-            if (orders.Mode != AutoEngineerMode.Waypoint)
-                return "";
-            float? remaining = planner.RemainingWaypointDistance;
-            if (!remaining.HasValue)
-                return "";
-
-            // Speed set to 0: the train won't get there until it's told to move.
-            string eta = "--:--";
-            if (orders.MaxSpeedMph == 0)
-                eta = "\u221E";
-            else if (_speed >= StoppedSpeed)
-            {
-                // Physics runs in real seconds; the clock runs TimeMultiplier times faster.
-                float gameSeconds = remaining.Value / _speed * TimeWeather.TimeMultiplier;
-                GameDateTime arrival = TimeWeather.Now.AddingSeconds(gameSeconds);
-                int minutes = Mathf.FloorToInt(arrival.Minutes);
-                eta = $"{minutes / 60:D2}:{minutes % 60:D2}";
-            }
-            return $"ETA: {eta}, {Units.DistanceText(remaining.Value)} to waypoint";
         }
 
         // One-time note of where the game's labels sit, for adjusting the line's position.

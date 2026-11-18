@@ -26,6 +26,7 @@ namespace ETA
             if (_host != null)
                 return;
             _host = new GameObject("ETA");
+            _host.AddComponent<EtaSampler>();
             _host.AddComponent<EtaLine>();
         }
 
