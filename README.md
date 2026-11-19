@@ -1,6 +1,7 @@
 # ETA
 
 Source: https://github.com/jamesplotts/eta
+Download: https://www.nexusmods.com/railroader/mods/2351 (or the GitHub releases)
 
 A Railroader mod for the 0.6 "Maintenance of Way" built-in mod loader. The locomotive window (lower left) gets a line under the cars, tons and length. When the selected engine is running in **AE Waypoint** mode, it shows when the train will get there and how far it has to go:
 
