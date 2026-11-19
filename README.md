@@ -2,7 +2,7 @@
 
 Source: https://github.com/jamesplotts/eta
 
-A Railroader mod for the 0.6 "Maintenance of Way" built-in mod loader. When the selected engine is running in **AE Waypoint** mode, the locomotive window (lower left) gets a line under the cars, tons and length:
+A Railroader mod for the 0.6 "Maintenance of Way" built-in mod loader. The locomotive window (lower left) gets a line under the cars, tons and length. When the selected engine is running in **AE Waypoint** mode, it shows when the train will get there and how far it has to go:
 
 ```
 ETA: 14:32, 2.3 mi to waypoint
@@ -45,6 +45,8 @@ Debug builds go to `Documents\Railroader\ModDev\ETA`, which the game loads as a 
 - Once a second it reads `AutoEngineerPlanner.RemainingWaypointDistance` for the selected engine and works out the arrival time on the game clock.
 - The callout is a copy of the Tab tag's callout prefab on the game's tooltip canvas, shown while the pointer is over the name label (`nameLabel`).
 - No Harmony: the mod doesn't patch any game code.
+
+[RosterTip](https://github.com/jamesplotts/rostertip) shows the same ETA line in its Engine Roster callout, worked out the same way. The two mods don't depend on each other.
 
 ## License
 
